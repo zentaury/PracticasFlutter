@@ -1,16 +1,9 @@
 # PracticasFlutter
 
-A new Flutter project.
+Proyecto con practicas en Flutter
 
-## Getting Started
+## Branches - Practicas
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- ColorEdit: Pasar parametros entre rutas nombradas.
+![Screenshot_1590447648](https://user-images.githubusercontent.com/31090711/82847251-57081d80-9eaa-11ea-8b4a-8615dba6a2a8.png)
+![Screenshot_1590447656](https://user-images.githubusercontent.com/31090711/82847257-5ff8ef00-9eaa-11ea-8dfa-b5dbbdd32e40.png)
