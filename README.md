@@ -5,5 +5,6 @@ Proyecto con practicas en Flutter
 ## Branches - Practicas
 
 - ColorEdit: Pasar parametros entre rutas nombradas.
-![Screenshot_1590447648](https://user-images.githubusercontent.com/31090711/82847251-57081d80-9eaa-11ea-8b4a-8615dba6a2a8.png)
-![Screenshot_1590447656](https://user-images.githubusercontent.com/31090711/82847257-5ff8ef00-9eaa-11ea-8dfa-b5dbbdd32e40.png)
+![Anotación 2020-05-25 171200](https://user-images.githubusercontent.com/31090711/82847392-24125980-9eab-11ea-8218-e66825474ea1.png)
+![Anotación 2020-05-25 171228](https://user-images.githubusercontent.com/31090711/82847404-2aa0d100-9eab-11ea-9a82-b1647b97c381.png)
+![Anotación 2020-05-25 171245](https://user-images.githubusercontent.com/31090711/82847409-2ffe1b80-9eab-11ea-877d-9036d8c3963e.png)
