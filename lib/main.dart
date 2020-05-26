@@ -6,8 +6,8 @@ class ColorEditApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        '/': (context) => ColorScreen(),
+      routes: { //establece las rutas nombradas
+        '/': (context) => ColorScreen(), // ruta principal o "home" donde comenzará la app
         '/edit': (context) => EditColorScreen(),
       },
     );
@@ -34,12 +34,12 @@ class _ColorScreenState extends State<ColorScreen> {
           child: RaisedButton(
             child: Text('Cambiar Color'),
             onPressed: () {
-              Navigator.of(context).pushNamed(
+              Navigator.of(context).pushNamed( //Redirige a la pantalla /edit
                 '/edit', 
-                arguments: _color,
+                arguments: _color, //toma los valores de la variable _colors y los envía para utilizarlos
               ).then((result) {
                 if (result != null){
-                  setState(() {
+                  setState(() { //Establece el estado de la pantalla al recibir los datos editados de otra ruta
                     _color = result;
                   });
                 }
@@ -63,8 +63,8 @@ class _EditColorScreenState extends State<EditColorScreen> {
 
   
   @override
-  void didChangeDependencies() {
-    final Color color = ModalRoute.of(context).settings.arguments;
+  void didChangeDependencies() { //permite tomar los datos de variables luego del estado Init
+    final Color color = ModalRoute.of(context).settings.arguments; //toma los valores (argumentos) que enviaron desde otra pantalla en el contexto de Navigator
     final List<String> canales = [
       color.red.toString(),
       color.green.toString(),
