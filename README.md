@@ -14,7 +14,7 @@ Proyecto con practicas en Flutter
 
 ![Anotación 2020-05-25 214840](https://user-images.githubusercontent.com/31090711/82858602-8d0cc800-9ed1-11ea-8bc1-5e0f33389b77.png)
 
--TodoList: Lista de tareas con persistencia local, utiliza path_provider para guardar y leer un archivo json localmente.
+- TodoList: Lista de tareas con persistencia local, utiliza path_provider para guardar y leer un archivo json localmente.
 
 ![Anotación 2020-05-26 181735](https://user-images.githubusercontent.com/31090711/82962444-79b73680-9f7d-11ea-9248-a37a446fa599.png)
 ![Anotación 2020-05-26 181756](https://user-images.githubusercontent.com/31090711/82962455-82a80800-9f7d-11ea-9ce3-8dcedeebbdb7.png)
