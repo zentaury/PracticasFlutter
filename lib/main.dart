@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(TodoListApp());
 
@@ -6,10 +9,17 @@ class Todo {
   String job;
   bool done;
   Todo(this.job) : done = false;
+  Todo.fromJson(Map<String, dynamic> json)
+      : job = json['job'],
+        done = json['done'];
 
   void toggleDone() =>
       done = !done; //cambia el estado del booleano para el checkbox del job
 
+  Map<String, dynamic> toJson() => {
+        'job': job,
+        'done': done,
+      };
 }
 
 class TodoListApp extends StatelessWidget {
@@ -42,34 +52,113 @@ class _TodoListPageState extends State<TodoListPage> {
 
   @override
   void initState() {
-    _todos = [
-      //lista de tareas
-      Todo('Primero'), //datos ficticios de lista
-      Todo('Segundo'),
-      Todo('Tercero'),
-    ];
+    _readTodos();
     super.initState();
   }
 
-  _removeChecked() { //elimina los marcados
-    List<Todo> pending = []; 
-    for (var todo in _todos) { //recorre la lista de tareas 
-      if (!todo.done) pending.add(todo); //verifica los que no estan marcados y los agrega a la lista pending
+  _readTodos() async {
+    try{
+    Directory dir = await getApplicationDocumentsDirectory();
+    File file = File('${dir.path}/todos.json');
+    List json = jsonDecode(await file.readAsString());
+    List<Todo> todos = [];
+    for (var item in json) {
+      todos.add(Todo.fromJson(item));
+    }
+    super.setState(() {
+      _todos = todos;
+    });
+    }catch(e) {
+      setState(() => _todos = []);
+    }
+  }
+
+  _buildList() {
+    if (_todos == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return ListView.builder(
+      itemCount: _todos
+          .length, //establece la cantidad de rows de acuerdo a la cantidad de tareas existentes
+      itemBuilder: (context, index) {
+        //dibuja las rows
+        return InkWell(
+          //hace cicleable la row de la tarea
+          onTap: () {
+            setState(() {
+              _todos[index]
+                  .toggleDone(); // toma el estado del booleano y lo convierte a su contrario.
+            });
+          },
+          child: ListTile(
+            title: Text(
+              _todos[index].job,
+              style: TextStyle(
+                decoration: (_todos[index].done
+                    ? TextDecoration
+                        .lineThrough //pregunta si done=true entonces tacha
+                    : TextDecoration.none), //si esta false lo deja sin tachar
+              ),
+            ),
+            leading: Checkbox(
+              value: _todos[index].done,
+              onChanged: (checked) {
+                setState(() {
+                  _todos[index].done = checked;
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void setState(fn) {
+    super.setState(fn);
+    _writeTodos();
+  }
+
+  _writeTodos() async {
+    try {
+      Directory dir = await getApplicationDocumentsDirectory();
+      File file = File('${dir.path}/todos.json');
+      String jsonText = jsonEncode(_todos);
+      print(jsonText);
+      await file.writeAsString(jsonText);
+    } catch (e) {
+      Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text('Error al grabar el fichero de datos')));
+    }
+  }
+
+  _removeChecked() {
+    //elimina los marcados
+    List<Todo> pending = [];
+    for (var todo in _todos) {
+      //recorre la lista de tareas
+      if (!todo.done)
+        pending.add(
+            todo); //verifica los que no estan marcados y los agrega a la lista pending
     }
     setState(() {
-      _todos = pending; //reemplaza la lista anterior por la que solo tiene descarmados
+      _todos =
+          pending; //reemplaza la lista anterior por la que solo tiene descarmados
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    _maybeRemoveChecked() { //Verifica si hay marcados para borrar
+    _maybeRemoveChecked() {
+      //Verifica si hay marcados para borrar
       if (_doneCount == 0) {
         return;
       }
 
-      showDialog( 
+      showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Confirmación'),
@@ -89,7 +178,7 @@ class _TodoListPageState extends State<TodoListPage> {
         ),
       ).then((borrar) {
         if (borrar) {
-          _removeChecked(); 
+          _removeChecked();
         }
       });
     }
@@ -98,50 +187,20 @@ class _TodoListPageState extends State<TodoListPage> {
       appBar: AppBar(
         title: Text('TodoList'),
         actions: [
-          IconButton(icon: Icon(Icons.delete), onPressed: _maybeRemoveChecked), //boton de borrar
+          IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: _maybeRemoveChecked), //boton de borrar
         ],
       ),
-      body: ListView.builder(
-        itemCount: _todos
-            .length, //establece la cantidad de rows de acuerdo a la cantidad de tareas existentes
-        itemBuilder: (context, index) {
-          //dibuja las rows
-          return InkWell(
-            //hace cicleable la row de la tarea
-            onTap: () {
-              setState(() {
-                _todos[index]
-                    .toggleDone(); // toma el estado del booleano y lo convierte a su contrario.
-              });
-            },
-            child: ListTile(
-              title: Text(
-                _todos[index].job,
-                style: TextStyle(
-                  decoration: (_todos[index].done
-                      ? TextDecoration
-                          .lineThrough //pregunta si done=true entonces tacha
-                      : TextDecoration.none), //si esta false lo deja sin tachar
-                ),
-              ),
-              leading: Checkbox(
-                value: _todos[index].done,
-                onChanged: (checked) {
-                  setState(() {
-                    _todos[index].done = checked;
-                  });
-                },
-              ),
-            ),
-          );
-        },
-      ),
+      body: _buildList(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context).pushNamed('addTodo').then((job) { //redirige a la pantalla addTodo
+          Navigator.of(context).pushNamed('addTodo').then((job) {
+            //redirige a la pantalla addTodo
             setState(() {
-              _todos.add(Todo(job)); //recibe la tarea de la pantalla addTodo y la agrega a la lista _todo
+              _todos.add(Todo(
+                  job)); //recibe la tarea de la pantalla addTodo y la agrega a la lista _todo
             });
           });
         },
@@ -184,13 +243,15 @@ class _NewTodoPageState extends State<NewTodoPage> {
             TextField(
               controller: _controller,
               onSubmitted: (job) {
-                Navigator.of(context).pop(job); //Toma el texto  y lo envía como parametro con ENTER
+                Navigator.of(context).pop(
+                    job); //Toma el texto  y lo envía como parametro con ENTER
               },
             ),
             RaisedButton(
               child: Text('Agregar'),
               onPressed: () {
-                Navigator.of(context).pop(_controller.text); //toma el texto y lo envía como parametro con el boton agregar
+                Navigator.of(context).pop(_controller
+                    .text); //toma el texto y lo envía como parametro con el boton agregar
               },
             ),
           ],
